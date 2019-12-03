@@ -21,7 +21,8 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:id="@+id/LL_toolbar">
                 <Button android:layout_width="?attr/actionBarSize"
                         android:layout_height="?attr/actionBarSize"
                         android:id="@+id/B_back"
@@ -40,7 +41,6 @@
                         android:background="@android:drawable/ic_menu_delete"/>
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -50,6 +50,8 @@
             android:id="@+id/RV"
             tools:itemCount="40"
             android:paddingTop="?attr/actionBarSize"/>
+
+
     <LinearLayout
             android:id="@+id/LL_get"
             android:visibility="gone"
@@ -57,19 +59,20 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_anchorGravity="left|top"
-            app:layout_anchor="@+id/B_NewPurchase">
+            app:layout_anchor="@+id/B_NewPurchase"
+        android:background="@drawable/linearlayout_style">
 
         <EditText
                 android:layout_width="272dp"
-                android:layout_height="match_parent"
+                android:layout_height="48dp"
                 android:id="@+id/ET_get"
                 android:hint="Введите новую покупку"/>
         <Button
 
-                android:layout_width="52dp"
-                android:layout_height="match_parent"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:id="@+id/B_get"
-                android:background="@android:drawable/ic_menu_add"/>
+                android:background="@drawable/ic_add_button"/>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
