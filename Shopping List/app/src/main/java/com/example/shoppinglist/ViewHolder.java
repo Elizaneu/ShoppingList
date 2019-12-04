@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 interface ItemClickListener{
     void CheckBoxClick(int position, CheckBox checkBox);
     void CardListener(int position, MotionEvent event);
+    void EditButtonClick(int position);
 }
 
 
@@ -18,6 +19,7 @@ class ViewHolder extends RecyclerView.ViewHolder  {
     TextView purchase;
     private CheckBox checkBox;
     RelativeLayout background, foreground;
+    private Button B_edit;
 
 
     ViewHolder(@NonNull View itemView, final ItemClickListener listener) {
@@ -35,6 +37,7 @@ class ViewHolder extends RecyclerView.ViewHolder  {
         checkBox = itemView.findViewById(R.id.checkBox);
         background = itemView.findViewById(R.id.RL_background);
         foreground = itemView.findViewById(R.id.RL_foreground);
+        B_edit = itemView.findViewById(R.id.B_edit);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -66,6 +69,16 @@ class ViewHolder extends RecyclerView.ViewHolder  {
                 return true;
             }
         });
+        B_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null){
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION){
+                        listener.EditButtonClick(position);
+                    }
+                }
+            }
+        });
     }
-
 }

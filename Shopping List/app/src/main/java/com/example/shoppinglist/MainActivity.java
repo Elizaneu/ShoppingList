@@ -2,11 +2,13 @@ package com.example.shoppinglist;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -35,6 +37,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText ET_get;
     private RecyclerView RV;
     private DataAdapter adapter;
+    private LinearLayout LL_edit;
+    private EditText ET_edit;
+    private Button B_edit;
+
+    private int position;
 
     private ArrayList<Item> purchases = new ArrayList<>();
     private ArrayList<Integer> CheckPurchases = new ArrayList<>();
@@ -62,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LL_get = findViewById(R.id.LL_get);
         ET_get = findViewById(R.id.ET_get);
         RV = findViewById(R.id.RV);
+        LL_edit = findViewById(R.id.LL_edit);
+        B_edit=findViewById(R.id.B_edit);
+        ET_edit = findViewById(R.id.ET_edit);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -69,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         B_NewPurchase.setOnClickListener(this);
         B_get.setOnClickListener(this);
         B_delete.setOnClickListener(this);
+        B_edit.setOnClickListener(this);
     }
 
     private void buildRecyclerView() {
@@ -91,16 +102,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         checker.remove(position);
                     }
                 }
-
             }
-
             @SuppressLint("RestrictedApi")
             @Override
             public void CardListener(int position, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     LL_get.setVisibility(View.GONE);
+                    LL_edit.setVisibility(View.GONE);
                     B_NewPurchase.setVisibility(View.VISIBLE);
                 }
+            }
+
+            @Override
+            public void EditButtonClick(int position) {
+                startEditItem(position);
             }
         });
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
@@ -227,6 +242,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 else
                     Toast.makeText(MainActivity.this, "Не стоит ни одной галочки", Toast.LENGTH_SHORT).show();
+            case R.id.B_edit:
+                if (!ET_edit.getText().toString().equals("")){
+                    editItem(position, new Item(ET_edit.getText().toString()));
+                    LL_get.setVisibility(View.GONE);
+                    LL_edit.setVisibility(View.GONE);
+                    B_NewPurchase.setVisibility(View.VISIBLE);
+                    View view = this.getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }else
+                    Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -256,6 +284,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @SuppressLint("RestrictedApi")
+    private void startEditItem(int position){
+        LL_get.setVisibility(View.GONE);
+        LL_edit.setVisibility(View.VISIBLE);
+        B_NewPurchase.setVisibility(View.GONE);
+        ET_edit.setText(purchases.get(position).getPurchase());
+        this.position = position;
+    }
+
+    private void editItem(int position, Item i){
+        purchases.set(position, i);
+        adapter.notifyItemChanged(position);
+    }
+
+    @SuppressLint("RestrictedApi")
     @Override
     public void onBackPressed() {
        // super.onBackPressed();
@@ -279,7 +321,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BackAlert.create().show();
         }else{
             LL_get.setVisibility(View.GONE);
+            LL_edit.setVisibility(View.GONE);
             B_NewPurchase.setVisibility(View.VISIBLE);
+
         }
     }
 }
