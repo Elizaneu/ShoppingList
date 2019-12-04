@@ -1,6 +1,8 @@
 package com.example.shoppinglist;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.NonNull;
@@ -8,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 interface ItemClickListener{
     void CheckBoxClick(int position, CheckBox checkBox);
+    void CardListener(int position, MotionEvent event);
 }
 
 
@@ -34,6 +37,7 @@ class ViewHolder extends RecyclerView.ViewHolder  {
         foreground = itemView.findViewById(R.id.RL_foreground);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setListener(final ItemClickListener listener) {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -48,6 +52,18 @@ class ViewHolder extends RecyclerView.ViewHolder  {
                         listener.CheckBoxClick(position, checkBox);
                     }
                 }
+            }
+        });
+        background.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (listener != null){
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION){
+                        listener.CardListener(position, event);
+                    }
+                }
+                return true;
             }
         });
     }

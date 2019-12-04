@@ -26,7 +26,7 @@ import org.json.JSONArray;
 import java.io.*;
 import java.util.*;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private FloatingActionButton B_NewPurchase;
     private LinearLayout LL_get;
@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText ET_get;
     private RecyclerView RV;
     private DataAdapter adapter;
-    private LinearLayout LL_toolbar;
 
     private ArrayList<Item> purchases = new ArrayList<>();
     private ArrayList<Integer> CheckPurchases = new ArrayList<>();
@@ -63,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         LL_get = findViewById(R.id.LL_get);
         ET_get = findViewById(R.id.ET_get);
         RV = findViewById(R.id.RV);
-        LL_toolbar = findViewById(R.id.LL_toolbar);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -71,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         B_NewPurchase.setOnClickListener(this);
         B_get.setOnClickListener(this);
         B_delete.setOnClickListener(this);
-        LL_toolbar.setOnTouchListener(this);
     }
 
     private void buildRecyclerView() {
@@ -96,8 +93,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
             }
-        });
 
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void CardListener(int position, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    LL_get.setVisibility(View.GONE);
+                    B_NewPurchase.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -226,16 +231,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @SuppressLint({"RestrictedApi", "ClickableViewAccessibility"})
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            LL_get.setVisibility(View.GONE);
-            B_NewPurchase.setVisibility(View.VISIBLE);
-        }
-        return true;
-    }
-
     private void insertItem(int position, String purchase){
         purchases.add(position, new Item(purchase));
         adapter.notifyItemInserted(position);
@@ -258,5 +253,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         adapter.notifyItemRemoved(position);
         SaveCache();
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void onBackPressed() {
+       // super.onBackPressed();
+        if (B_NewPurchase.getVisibility() == View.VISIBLE) {
+            AlertDialog.Builder BackAlert = new AlertDialog.Builder(this);
+            BackAlert.setTitle("Quit")
+                    .setIcon(R.drawable.ic_delete_black_24dp)
+                    .setMessage("Вы действительно хотите выйти?")
+                    .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            BackAlert.create().show();
+        }else{
+            LL_get.setVisibility(View.GONE);
+            B_NewPurchase.setVisibility(View.VISIBLE);
+        }
     }
 }
