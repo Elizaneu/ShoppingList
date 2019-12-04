@@ -41,4 +41,8 @@ public class DataAdapter extends RecyclerView.Adapter<ViewHolder> {
     public int getItemCount() {
         return purchases.size();
     }
+
+    Item getItem(int position){
+        return purchases.get(position);
+    }
 }

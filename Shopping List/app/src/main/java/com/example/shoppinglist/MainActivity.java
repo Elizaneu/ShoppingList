@@ -1,11 +1,17 @@
 package com.example.shoppinglist;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.*;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -15,7 +21,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import org.json.JSONArray;
 
+import java.io.*;
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnTouchListener {
@@ -45,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findByID();
         buildRecyclerView();
         setClickListener();
+        LoadCache();
     }
 
     private void findByID() {
@@ -71,14 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RV.setAdapter(adapter);
         adapter.setOnClickListener(new ItemClickListener() {
             @Override
-            public void onDeleteClick(int position, CheckBox checkBox) {
-                if (checkBox.isChecked()) {
-                    removeItem(position);
-                }else
-                    Toast.makeText(MainActivity.this, "Предмет не куплен", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
             public void CheckBoxClick(int position, CheckBox checkBox) {
                 if (checkBox.isChecked()){
                     CheckPurchases.add(position);
@@ -96,6 +97,85 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                if (((ViewHolder)viewHolder).getCheck()) {
+                    removeItem(viewHolder.getAdapterPosition());
+                    Toast.makeText(MainActivity.this, "Товар удален", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(MainActivity.this, "Товар не помечен галочкой", Toast.LENGTH_SHORT).show();
+                    adapter.notifyItemChanged(viewHolder.getAdapterPosition());
+                }
+            }
+            @Override
+            public void onChildDraw(@NonNull Canvas c,@NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                    int actionState, boolean isCurrentlyActive) {
+                final View foregroundView = ((ViewHolder) viewHolder).foreground;
+
+                getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+            }
+            @Override
+            public void onChildDrawOver(Canvas c, RecyclerView recyclerView,
+                                        RecyclerView.ViewHolder viewHolder, float dX, float dY,
+                                        int actionState, boolean isCurrentlyActive) {
+                final View foregroundView = ((ViewHolder) viewHolder).foreground;
+                getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+            }
+            @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                final View foregroundView = ((ViewHolder) viewHolder).foreground;
+                getDefaultUIUtil().clearView(foregroundView);
+            }
+            @Override
+            public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+                if (viewHolder != null) {
+                    final View foregroundView = ((ViewHolder) viewHolder).foreground;
+                    getDefaultUIUtil().onSelected(foregroundView);
+                }
+            }
+        }).attachToRecyclerView(RV);
+    }
+
+    private void LoadCache(){
+        File cache = new File(getCacheDir(), "purchases.txt");
+        try {
+            FileReader in = new FileReader(cache);
+            BufferedReader buffer = new BufferedReader(in);
+            String line = buffer.readLine();
+            while (line != null) {
+                insertItem(purchases.size(), line);
+                line = buffer.readLine();
+            }
+        } catch (FileNotFoundException e) {
+            Toast.makeText(this, "Не удалось открыть файл кэша", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            Toast.makeText(this, "Возникла ошибка при загрузки из кэша", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void SaveCache(){
+        File cache = new File(getCacheDir(), "purchases.txt");
+        try {
+            FileWriter out = new FileWriter(cache, false);
+            for (Item s:purchases){
+                out.write(s.getPurchase());
+                out.append('\n');
+            }
+            out.flush();
+        } catch (FileNotFoundException  e) {
+            Toast.makeText(this, "Не удалось получить доступ к файлам кэша для перезаписи", Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Не удалось записать в кэш изменения", Toast.LENGTH_LONG).show();
+        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -118,10 +198,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.B_delete:
                 if (CheckPurchases.size()!=0){
-                    for (int i = CheckPurchases.size()-1; i >= 0; i--){
-                        removeItem(CheckPurchases.get(i));
-                    }
-                    CheckPurchases.removeAll(CheckPurchases);
+                    AlertDialog.Builder DeleteAll = new AlertDialog.Builder(this);
+                    DeleteAll.setTitle("Delete")
+                             .setIcon(R.drawable.ic_delete_black_24dp)
+                             .setMessage("Вы действительно хотите удалить все отмеченные покупки?")
+                             .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialog, int which) {
+                                     for (int i = CheckPurchases.size()-1; i >= 0; i--){
+                                         removeItem(CheckPurchases.get(i));
+                                     }
+                                     CheckPurchases.removeAll(CheckPurchases);
+                                     dialog.cancel();
+                                 }
+                             })
+                             .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                                 @Override
+                                 public void onClick(DialogInterface dialog, int which) {
+                                     dialog.cancel();
+                                 }
+                             });
+                    DeleteAll.create().show();
                 }
                 else
                     Toast.makeText(MainActivity.this, "Не стоит ни одной галочки", Toast.LENGTH_SHORT).show();
@@ -142,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void insertItem(int position, String purchase){
         purchases.add(position, new Item(purchase));
         adapter.notifyItemInserted(position);
+        SaveCache();
     }
 
     private void removeItem(int position){
@@ -159,5 +257,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 CheckPurchases.set(i, CheckPurchases.get(i)-1);
         }
         adapter.notifyItemRemoved(position);
+        SaveCache();
     }
 }
