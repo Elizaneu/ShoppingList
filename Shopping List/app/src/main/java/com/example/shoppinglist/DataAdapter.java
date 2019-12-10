@@ -1,7 +1,5 @@
 package com.example.shoppinglist;
 
-import android.content.Context;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,4 +43,5 @@ public class DataAdapter extends RecyclerView.Adapter<ViewHolder> {
     Item getItem(int position){
         return purchases.get(position);
     }
+
 }
