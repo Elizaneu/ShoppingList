@@ -31,6 +31,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
             String serverAnswer;
             String url = "https://flask-shoplist.herokuapp.com/api/login";
             try {
+                //подключение
                 URL obj = new URL(url);
                 HttpURLConnection con = (HttpURLConnection)obj.openConnection();
                 con.setRequestProperty("Accept-Language", "en-US,en,q=0,5");
@@ -115,6 +116,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
         findByID();
         setListener();
+        Load();
     }
 
     private void findByID() {
@@ -126,6 +128,9 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
     private void setListener(){
         B_auth.setOnClickListener(this);
         B_reg.setOnClickListener(this);
+    }
+    private void Load(){
+
     }
 
     private void connect(String username, String password){

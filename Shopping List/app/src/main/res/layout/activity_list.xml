@@ -48,4 +48,10 @@
             app:srcCompat="@android:drawable/ic_input_add"
             app:backgroundTint="@color/colorAccent">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+    <TextView
+            android:visibility="visible"
+            android:id="@+id/TV"
+            android:layout_width="match_parent"
+            android:layout_height="503dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

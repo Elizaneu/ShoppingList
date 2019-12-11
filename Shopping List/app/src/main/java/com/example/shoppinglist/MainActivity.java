@@ -24,13 +24,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ListActivity.class));
             else
                 startActivity(new Intent(MainActivity.this, AuthActivity.class));
-        } catch (FileNotFoundException e) {
-            Toast.makeText(this, "Не удалось открыть файл кэша", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            Toast.makeText(this, "Возникла ошибка при загрузки из кэша", Toast.LENGTH_LONG).show();
+        }catch (Exception e){
+            startActivity(new Intent(MainActivity.this, AuthActivity.class));
         }
-
-
 
         finish();
     }

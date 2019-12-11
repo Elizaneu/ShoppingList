@@ -99,7 +99,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
         findByID();
         buildRecyclerView();
         setClickListener();
-        LoadCache();
+        //LoadCache();
     }
     private void findByID() {
         B_get = findViewById(R.id.B_get);
