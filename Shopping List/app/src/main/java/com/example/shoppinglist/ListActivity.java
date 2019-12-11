@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView RV;
     private Button B_exit;
     private ListAdapter adapter;
+    private int id;
 
     private ArrayList<String> lists = new ArrayList<>();
 
@@ -92,8 +94,8 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void listClick(int position) {
-                startActivity(new Intent(ListActivity.this, PurchasesActivity.class));
-                finish();
+                Intent intent = new Intent(ListActivity.this, PurchasesActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -103,8 +105,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
             FileReader in = new FileReader(cache);
             BufferedReader buffer = new BufferedReader(in);
             String line = buffer.readLine();
-            if (line != null)
-                insertItem(line);
+            id = Integer.parseInt(line);
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "Не удалось открыть файл кэша", Toast.LENGTH_LONG).show();
         } catch (IOException e) {
@@ -132,6 +133,14 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                File cache = new File(getCacheDir(), "purchases.txt");
+                                try {
+                                    FileWriter out = new FileWriter(cache, false);
+                                    out.flush();
+                                    out.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 startActivity(new Intent(ListActivity.this, AuthActivity.class));
                                 finish();
                             }
@@ -158,7 +167,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    void insertItem(String list){
+    void insertItem(@NonNull String list){
         if (!list.equals("")){
             lists.add(lists.size(), list);
             adapter.notifyItemInserted(lists.size()-1);

@@ -298,7 +298,6 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
                 }else
                     Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show();
             case R.id.B_back:
-                startActivity(new Intent(PurchasesActivity.this, ListActivity.class));
                 finish();
                 break;
 
@@ -350,7 +349,6 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     public void onBackPressed() {
         // super.onBackPressed();
         if (B_NewPurchase.getVisibility() == View.VISIBLE) {
-            startActivity(new Intent(PurchasesActivity.this, ListActivity.class));
             finish();
         }else{
             LL_get.setVisibility(View.GONE);

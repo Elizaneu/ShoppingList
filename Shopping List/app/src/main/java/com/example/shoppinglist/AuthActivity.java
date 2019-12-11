@@ -81,8 +81,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                     File cache = new File(getCacheDir(), "purchases.txt");
                     try {
                         FileWriter out = new FileWriter(cache, false);
-                        out.write("Integer.toString(id)");
-                        out.append('\n');
+                        out.write(Integer.toString(id));
+                        out.flush();
                         TV.setText(Integer.toString(id));
                         startActivity(new Intent(AuthActivity.this, ListActivity.class));
                         finish();
@@ -92,8 +92,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                 } catch (JSONException e) {
                     TV.setText(e.toString());
                 }
-
-
                // TV.setText(s);
             }
         }
