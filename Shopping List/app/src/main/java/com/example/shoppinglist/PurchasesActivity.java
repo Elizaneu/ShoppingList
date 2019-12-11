@@ -298,7 +298,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
                 }else
                     Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show();
             case R.id.B_back:
-                startActivity(new Intent(PurchasesActivity.this, AuthActivity.class));
+                startActivity(new Intent(PurchasesActivity.this, ListActivity.class));
                 finish();
                 break;
 
@@ -350,23 +350,8 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     public void onBackPressed() {
         // super.onBackPressed();
         if (B_NewPurchase.getVisibility() == View.VISIBLE) {
-            AlertDialog.Builder BackAlert = new AlertDialog.Builder(this);
-            BackAlert.setTitle("Quit")
-                    .setIcon(R.drawable.ic_delete_black_24dp)
-                    .setMessage("Вы действительно хотите выйти?")
-                    .setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("Нет", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    });
-            BackAlert.create().show();
+            startActivity(new Intent(PurchasesActivity.this, ListActivity.class));
+            finish();
         }else{
             LL_get.setVisibility(View.GONE);
             LL_edit.setVisibility(View.GONE);
