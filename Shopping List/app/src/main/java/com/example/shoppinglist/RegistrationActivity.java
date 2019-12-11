@@ -46,16 +46,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 Gson g = new Gson();
                 User user = new User(strings[0], strings[1], strings[2]);
                 String urlParameters = g.toJson(user);
-//                String urlParameters = "username="+strings[0]+" password="+strings[2]+" email="+strings[1];
 
-
-//                JSONObject jobj = new JSONObject();
-//                jobj.put("username", strings[0]);
-//                jobj.put("password", strings[2]);
-//                jobj.put("email", strings[1]);
-//                String urlParameters = jobj.toString();
-
-                TextView textView = findViewById(R.id.TV_us);
                 //Запись в поток
                 DataOutputStream wr = new DataOutputStream(con.getOutputStream());
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
@@ -66,8 +57,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 //получение ответа
                 con.connect();
                 int responseCode  = con.getResponseCode();
-                if (responseCode == 400)
-                    return String.valueOf(responseCode);
+                if (responseCode != 201)
+                    return "f";
                 BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String inputLine;
                 StringBuffer response = new StringBuffer();
@@ -88,11 +79,11 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         @Override
         protected void onPostExecute(String s) {
             TextView TV = findViewById(R.id.TV);
-
-            if (s.equals("400")){
+            if (s.equals("f")){
                 TV.setText("Регистрация не удалась");
             }else{
                 startActivity(new Intent(RegistrationActivity.this, PurchasesActivity.class));
+                finish();
             }
         }
     }
@@ -117,9 +108,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
         findByID();
         setListener();
-        ET_username.setText("testuser");
-        ET_email.setText("testuser@testuser.com");
-        ET_password.setText("testuser");
     }
 
     private void findByID() {
@@ -133,12 +121,13 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         B_registration.setOnClickListener(this);
         B_back.setOnClickListener(this);
     }
-    private void back(){
-
-    }
     private void connect(String username, String email, String password){
-        registration reg = new registration();
-        reg.execute(username, email, password);
+        if(!username.equals("") && !email.equals("") && !password.equals("")) {
+            registration reg = new registration();
+            reg.execute(username, email, password);
+        }else{
+            Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -148,7 +137,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                 connect(ET_username.getText().toString(), ET_email.getText().toString(), ET_password.getText().toString());
                 break;
             case R.id.B_back:
-                back();
+                startActivity(new Intent(RegistrationActivity.this, AuthActivity.class));
+                finish();
                 break;
         }
     }

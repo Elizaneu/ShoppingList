@@ -3,6 +3,7 @@ package com.example.shoppinglist;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     private LinearLayout LL_edit;
     private EditText ET_edit;
     private Button B_edit;
+    private Button B_back;
 
     private int position;
 
@@ -109,6 +111,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
         LL_edit = findViewById(R.id.LL_edit);
         B_edit=findViewById(R.id.B_edit);
         ET_edit = findViewById(R.id.ET_edit);
+        B_back = findViewById(R.id.B_back);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -117,6 +120,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
         B_get.setOnClickListener(this);
         B_delete.setOnClickListener(this);
         B_edit.setOnClickListener(this);
+        B_back.setOnClickListener(this);
     }
 
     private void buildRecyclerView() {
@@ -293,6 +297,10 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
                     }
                 }else
                     Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show();
+            case R.id.B_back:
+                startActivity(new Intent(PurchasesActivity.this, AuthActivity.class));
+                finish();
+                break;
 
         }
     }
