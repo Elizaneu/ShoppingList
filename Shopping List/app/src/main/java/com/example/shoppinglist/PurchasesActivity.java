@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,7 +24,6 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -385,7 +383,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
                 if (CheckPurchases.size()!=0){
                     AlertDialog.Builder DeleteAll = new AlertDialog.Builder(this);
                     DeleteAll.setTitle("Delete")
-                            .setIcon(R.drawable.ic_delete_black_24dp)
+                            .setIcon(R.drawable.ic_delete_red)
                             .setMessage("Вы действительно хотите удалить все отмеченные покупки?")
                             .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                                 @Override

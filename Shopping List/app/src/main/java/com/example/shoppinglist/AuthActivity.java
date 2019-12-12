@@ -72,9 +72,8 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
         @Override
         protected void onPostExecute(String s) {
-            TextView TV = findViewById(R.id.TV);
             if (s.equals("f")){
-                TV.setText("Авторизация не удалась");
+                Toast.makeText(AuthActivity.this, "Авторизация не удалась", Toast.LENGTH_SHORT).show();
             }else{
                 try {
                     JSONObject user = new JSONObject(s);
@@ -84,14 +83,14 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
                         FileWriter out = new FileWriter(cache, false);
                         out.write(Integer.toString(id));
                         out.flush();
-                        TV.setText(Integer.toString(id));
+                        Toast.makeText(AuthActivity.this, "Авторизация удалась", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(AuthActivity.this, ListActivity.class));
                         finish();
                     } catch (IOException e) {
-                        TV.setText(e.toString());
+                        Toast.makeText(AuthActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
-                    TV.setText(e.toString());
+                    Toast.makeText(AuthActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }
                // TV.setText(s);
             }
@@ -140,7 +139,6 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             Toast.makeText(this, "Не все поля заполнены", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override

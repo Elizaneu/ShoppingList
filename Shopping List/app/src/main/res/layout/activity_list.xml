@@ -66,13 +66,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@android:drawable/ic_input_add"
-            app:backgroundTint="@color/colorAccent">
+            app:srcCompat="@drawable/ic_add_item"
+            app:backgroundTint="@color/colorAccent" tools:ignore="VectorDrawableCompat">
     </com.google.android.material.floatingactionbutton.FloatingActionButton>
 
-    <TextView
-            android:visibility="visible"
-            android:id="@+id/TV"
-            android:layout_width="match_parent"
-            android:layout_height="503dp"/>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

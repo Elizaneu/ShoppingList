@@ -25,7 +25,6 @@ import java.util.Date;
 public class RegistrationActivity extends AppCompatActivity implements View.OnClickListener{
 
     private Button B_registration;
-    private Button B_back;
     private EditText ET_username;
     private EditText ET_email;
     private EditText ET_password;
@@ -79,9 +78,8 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         @SuppressLint("SetTextI18n")
         @Override
         protected void onPostExecute(String s) {
-            TextView TV = findViewById(R.id.TV);
             if (s.equals("f")){
-                TV.setText("Регистрация не удалась");
+                Toast.makeText(RegistrationActivity.this, "Регистрация не удалась", Toast.LENGTH_SHORT).show();
             }else{
                 try {
                     JSONObject user = new JSONObject(s);
@@ -91,14 +89,14 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                         FileWriter out = new FileWriter(cache, false);
                         out.write(Integer.toString(id));
                         out.flush();
-                        TV.setText(Integer.toString(id));
+                        Toast.makeText(RegistrationActivity.this, "Регистрация удалась", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(RegistrationActivity.this, ListActivity.class));
                         finish();
                     } catch (IOException e) {
-                        TV.setText(e.toString());
+                        Toast.makeText(RegistrationActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
-                    TV.setText(e.toString());
+                    Toast.makeText(RegistrationActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -128,14 +126,12 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
     private void findByID() {
         B_registration = findViewById(R.id.B_registration);
-        B_back = findViewById(R.id.B_back);
         ET_username = findViewById(R.id.ET_username);
         ET_email = findViewById(R.id.ET_email);
         ET_password = findViewById(R.id.ET_password);
     }
     private void setListener(){
         B_registration.setOnClickListener(this);
-        B_back.setOnClickListener(this);
     }
     private void connect(String username, String email, String password){
         if(!username.equals("") && !email.equals("") && !password.equals("")) {
@@ -152,10 +148,12 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             case R.id.B_registration:
                 connect(ET_username.getText().toString(), ET_email.getText().toString(), ET_password.getText().toString());
                 break;
-            case R.id.B_back:
-                startActivity(new Intent(RegistrationActivity.this, AuthActivity.class));
-                finish();
-                break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(RegistrationActivity.this, AuthActivity.class));
+        finish();
     }
 }

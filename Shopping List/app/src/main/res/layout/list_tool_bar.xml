@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="50dp"
-              android:orientation="horizontal">
+              android:orientation="horizontal"
+                android:background="@color/colorPrimary">
 
 
     <TextView
@@ -10,13 +11,12 @@
             android:layout_height="?attr/actionBarSize"
             android:text="Списки продуктов"
             android:textSize="30sp"
-            android:paddingTop="6sp"
             android:layout_weight="1"
-            android:paddingLeft="20sp"/>
-    <Button android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
+            android:textColor="#FFFFFF"/>
+    <Button android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/B_exit"
             android:background="@drawable/ic_exit"
-            android:paddingTop="10dp"/>
+            android:paddingTop="10sp"/>
 
 </LinearLayout>

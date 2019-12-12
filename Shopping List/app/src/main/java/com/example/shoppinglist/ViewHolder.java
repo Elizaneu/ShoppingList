@@ -40,7 +40,7 @@ class ViewHolder extends RecyclerView.ViewHolder  {
         B_edit = itemView.findViewById(R.id.B_edit);
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility"})
     private void setListener(final ItemClickListener listener) {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -49,7 +49,7 @@ class ViewHolder extends RecyclerView.ViewHolder  {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION){
                         if (isChecked)
-                            purchase.setTextColor(Color.GREEN);
+                            purchase.setTextColor(Color.parseColor(new String("#008577")));
                         else
                             purchase.setTextColor(Color.GRAY);
                         listener.CheckBoxClick(position, checkBox);

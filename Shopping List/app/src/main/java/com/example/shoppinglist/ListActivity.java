@@ -23,8 +23,6 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -270,7 +268,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
             public void DeleteButtonClick(final int position) {
                 AlertDialog.Builder Delete = new AlertDialog.Builder(ListActivity.this);
                 Delete.setTitle("Delete")
-                        .setIcon(R.drawable.ic_delete_black_24dp)
+                        .setIcon(R.drawable.ic_delete_red)
                         .setMessage("Вы действительно хотите удалить список?")
                         .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                             @Override
