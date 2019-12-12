@@ -1,9 +1,7 @@
 package com.example.shoppinglist;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
+import android.content.*;
 import android.graphics.Canvas;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,6 +44,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     private EditText ET_edit;
     private Button B_edit;
     private Button B_back;
+    private Button B_copy;
 
     private int position;
 
@@ -54,7 +53,10 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     private ArrayList<Integer> CheckPurchases = new ArrayList<>();
     @SuppressLint("UseSparseArrays")
     private HashMap<Integer, CheckBox> checker = new HashMap<>();
+
     private String id;
+
+    private ClipboardManager clipboardManager;
 
 
     private class connection extends AsyncTask<String, Void, String>{
@@ -247,6 +249,9 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
         buildRecyclerView();
         setClickListener();
         LoadCache();
+
+        clipboardManager=(ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+
     }
     private void findByID() {
         B_get = findViewById(R.id.B_get);
@@ -259,6 +264,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
         B_edit=findViewById(R.id.B_edit);
         ET_edit = findViewById(R.id.ET_edit);
         B_back = findViewById(R.id.B_back);
+        B_copy = findViewById(R.id.B_copy);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -268,6 +274,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
         B_delete.setOnClickListener(this);
         B_edit.setOnClickListener(this);
         B_back.setOnClickListener(this);
+        B_copy.setOnClickListener(this);
     }
 
     private void buildRecyclerView() {
@@ -418,7 +425,12 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
             case R.id.B_back:
                 finish();
                 break;
+            case R.id.B_copy:
+                ClipData clipData = ClipData.newPlainText("text", "https://flask-shoplist.herokuapp.com/lists/" + id);
+                clipboardManager.setPrimaryClip(clipData);
 
+                Toast.makeText(getApplicationContext(),"Ссылка на список продуктов скопированна",Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
