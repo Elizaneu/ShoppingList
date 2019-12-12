@@ -3,8 +3,8 @@ package com.example.shoppinglist;
 import android.widget.TextView;
 
 class Item {
-    private String Text;
-    Item(String purchase){Text = purchase;}
-    String getPurchase(){return Text;}
-    void setPurchase(String Text){this.Text = Text;}
+    private String itemname;
+    Item(String purchase){itemname = purchase;}
+    String getPurchase(){return itemname;}
+    void setPurchase(String Text){this.itemname = Text;}
 }

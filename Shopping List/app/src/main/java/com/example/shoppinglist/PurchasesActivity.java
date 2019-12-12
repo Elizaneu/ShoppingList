@@ -20,6 +20,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -46,40 +50,177 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     private int position;
 
     private ArrayList<Item> purchases = new ArrayList<>();
+    private ArrayList<Integer> ID = new ArrayList<>();
     private ArrayList<Integer> CheckPurchases = new ArrayList<>();
     @SuppressLint("UseSparseArrays")
     private HashMap<Integer, CheckBox> checker = new HashMap<>();
+    private String id;
 
-    private static class asyncTask extends AsyncTask<URL, Void, String > {
+
+    private class connection extends AsyncTask<String, Void, String>{
+
+
+        @SuppressLint("WrongThread")
         @Override
-        protected String doInBackground(URL... urls) {
-            URL url = urls[0];
-            String lines = "";
-            HttpURLConnection connection = null;
-            try {
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.connect();
-                DataInputStream in = new DataInputStream(connection.getInputStream());
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(in));
-                String s;
-                while((s = buffer.readLine())!= null){
-                    lines+=s;
-                    lines+="\n";
-                };
-            } catch (IOException e) {
-                lines+=e.toString();
-            }finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
+        protected String doInBackground(String... strings) {
+            String url = "";
+            switch (strings[0]){
+                case "GET":
+                    url = "https://flask-shoplist.herokuapp.com/api/lists/"+id+"/items";
+                    try{
+                        //подключение
+                        URL obj = new URL(url);
+                        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                        con.setRequestMethod("GET");
+                        con.connect();
+                        //получение ответа
+                        int responseCode  = con.getResponseCode();
+                        if (responseCode != 200){
+                            return "f";
+                        }
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        String inputLine;
+                        StringBuffer response = new StringBuffer();
+                        while ((inputLine = reader.readLine())!=null){
+                            response.append(inputLine);
+                        }
+                        reader.close();
+                        //парсинг ответа
+                        JSONObject jsonObject = new JSONObject(response.toString());
+                        return jsonObject.getString("items");
+                    } catch (Exception e) {
+                        return e.toString();
+                    }
+                case "POST":
+                    url = "https://flask-shoplist.herokuapp.com/api/lists/"+id+"/items";
+                    try {
+                        //подключение
+                        URL obj = new URL(url);
+                        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                        con.setRequestProperty("Accept-Language", "en-US,en,q=0,5");
+                        con.setRequestProperty("Content-Type", "application/json");
+                        con.setRequestMethod("POST");
+                        con.setDoOutput(true);
+                        //парсинг
+                        Gson g = new Gson();
+                        Item item = new Item(strings[1]);
+                        String urlParameters = g.toJson(item);
+                        //запись в поток
+                        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+                        writer.write(urlParameters);
+                        wr.flush();
+                        writer.close();
+                        wr.close();
+                        //получение ответа
+                        int responseCode  = con.getResponseCode();
+                        if (responseCode != 201)
+                            return "f";
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        String inputLine;
+                        StringBuffer response = new StringBuffer();
+                        while ((inputLine = reader.readLine())!=null){
+                            response.append(inputLine);
+                        }
+                        reader.close();
+
+                        return response.toString();
+
+                    } catch (Exception e){
+                        return e.toString();
+                    }
+                case "PUT":
+                    url = "https://flask-shoplist.herokuapp.com/api/items/"+strings[1];
+                    try {
+                        //подключение
+                        URL obj = new URL(url);
+                        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                        con.setRequestProperty("Accept-Language", "en-US,en,q=0,5");
+                        con.setRequestProperty("Content-Type", "application/json");
+                        con.setRequestMethod("PUT");
+                        con.setDoOutput(true);
+                        //парсинг
+                        Gson g = new Gson();
+                        Item item = new Item(strings[2]);
+                        String urlParameters = g.toJson(item);
+                        //запись в поток
+                        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+                        writer.write(urlParameters);
+                        wr.flush();
+                        writer.close();
+                        wr.close();
+                        //получение ответа
+                        int responseCode  = con.getResponseCode();
+                        if (responseCode != 200)
+                            return "f";
+                        return "OK";
+
+                    } catch (Exception e){
+                        return e.toString();
+                    }
+                case "DELETE":
+                    url = "https://flask-shoplist.herokuapp.com/api/items/"+strings[1];
+                    try{
+                        //подключение
+                        URL obj = new URL(url);
+                        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                        con.setRequestMethod("DELETE");
+                        con.connect();
+                        //получение ответа
+                        int responseCode  = con.getResponseCode();
+                        if (responseCode != 200){
+                            return "f";
+                        }
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        String inputLine;
+                        StringBuffer response = new StringBuffer();
+                        while ((inputLine = reader.readLine())!=null){
+                            response.append(inputLine);
+                        }
+                        reader.close();
+                        return "OK";
+                    } catch (Exception e) {
+                        return e.toString();
+                    }
             }
-            return lines;
+            return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
+            if (s.equals("f")){
+                Toast.makeText(PurchasesActivity.this, "error", Toast.LENGTH_SHORT).show();
+            }else {
+                if (s.charAt(0) == '['){
+                    try {
+                        JSONArray jsonArray = new JSONArray(s);
+                        for (int i = 0; i < jsonArray.length(); i++){
+                            JSONObject object = jsonArray.getJSONObject(i);
+                            int id = object.getInt("id");
+                            String list = object.getString("itemname");
+                            ID.add(id);
+                            purchases.add(new Item(list));
+                            adapter.notifyItemInserted(purchases.size()-1);
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(PurchasesActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if (s.charAt(0) == '{'){
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        int id = object.getInt("id");
+                        String list = object.getString("itemname");
+                        ID.add(id);
+                        purchases.add(new Item(list));
+                        adapter.notifyItemInserted(purchases.size()-1);
+                    } catch (JSONException e) {
+                        Toast.makeText(PurchasesActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
 
+            }
         }
     }
 
@@ -96,10 +237,13 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
 
         setContentView(R.layout.activity_purchases);
 
+        Bundle arguments = getIntent().getExtras();
+        id = Integer.toString(arguments.getInt("id"));
+
         findByID();
         buildRecyclerView();
         setClickListener();
-        //LoadCache();
+        LoadCache();
     }
     private void findByID() {
         B_get = findViewById(R.id.B_get);
@@ -206,37 +350,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void LoadCache(){
-        File cache = new File(getCacheDir(), "purchases.txt");
-        try {
-            FileReader in = new FileReader(cache);
-            BufferedReader buffer = new BufferedReader(in);
-            String line = buffer.readLine();
-            while (line != null) {
-                insertItem(purchases.size(), line);
-                line = buffer.readLine();
-            }
-        } catch (FileNotFoundException e) {
-            Toast.makeText(this, "Не удалось открыть файл кэша", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            Toast.makeText(this, "Возникла ошибка при загрузки из кэша", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void SaveCache(){
-        File cache = new File(getCacheDir(), "purchases.txt");
-        try {
-            FileWriter out = new FileWriter(cache, false);
-            for (Item s:purchases){
-                out.write(s.getPurchase());
-                out.append('\n');
-            }
-            out.flush();
-        } catch (FileNotFoundException  e) {
-            Toast.makeText(this, "Не удалось получить доступ к файлам кэша для перезаписи", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Не удалось записать в кэш изменения", Toast.LENGTH_LONG).show();
-        }
+        new PurchasesActivity.connection().execute("GET");
     }
 
     @SuppressLint("RestrictedApi")
@@ -297,6 +411,7 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
                     }
                 }else
                     Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show();
+                break;
             case R.id.B_back:
                 finish();
                 break;
@@ -305,14 +420,17 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void insertItem(int position, String purchase){
-        if (purchase != null){
-            purchases.add(position, new Item(purchase));
-            adapter.notifyItemInserted(position);
-            SaveCache();
+        if (!purchase.equals("")){
+            new PurchasesActivity.connection().execute("POST", purchase);
+        }else{
+            Toast.makeText(this, "Строка пуста", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void removeItem(int position){
+        new PurchasesActivity.connection().execute("DELETE", Integer.toString(ID.get(position)));
+
+        ID.remove(position);
         purchases.remove(position);
         CheckBox c = checker.remove(position);
         if (c != null)
@@ -327,7 +445,6 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
                 CheckPurchases.set(i, CheckPurchases.get(i)-1);
         }
         adapter.notifyItemRemoved(position);
-        SaveCache();
     }
 
     @SuppressLint("RestrictedApi")
@@ -340,6 +457,9 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void editItem(int position, Item i){
+
+        new PurchasesActivity.connection().execute("PUT", ID.get(position).toString(), i.getPurchase());
+
         purchases.set(position, i);
         adapter.notifyItemChanged(position);
     }
@@ -358,8 +478,4 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    void connect() throws MalformedURLException {
-        asyncTask task = new asyncTask();
-        task.execute(new URL("https://flask-shoplist.herokuapp.com/api/users/1"));
-    }
 }

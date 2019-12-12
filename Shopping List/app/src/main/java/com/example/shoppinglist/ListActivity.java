@@ -49,6 +49,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     private class connection extends AsyncTask<String, Void, String>{
 
         @SuppressLint("WrongThread")
@@ -114,13 +115,6 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
                             response.append(inputLine);
                         }
                         reader.close();
-                        //парсинг ответа
-                        JSONObject jsonObject = new JSONObject(response.toString());
-                        int id = jsonObject.getInt("id");
-                        //результат
-                        ID.add(id);
-                        lists.add(strings[1]);
-                        adapter.notifyItemInserted(lists.size()-1);
 
                         return response.toString();
 
@@ -131,8 +125,29 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
 
                     break;
                 case "DELETE":
-
-                    break;
+                    url = "https://flask-shoplist.herokuapp.com/api/lists/"+strings[1];
+                    try{
+                        //подключение
+                        URL obj = new URL(url);
+                        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                        con.setRequestMethod("DELETE");
+                        con.connect();
+                        //получение ответа
+                        int responseCode  = con.getResponseCode();
+                        if (responseCode != 200){
+                            return "f";
+                        }
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                        String inputLine;
+                        StringBuffer response = new StringBuffer();
+                        while ((inputLine = reader.readLine())!=null){
+                            response.append(inputLine);
+                        }
+                        reader.close();
+                        return "OK";
+                    } catch (Exception e) {
+                        return e.toString();
+                    }
             }
             return null;
         }
@@ -157,6 +172,19 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(ListActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                     }
                 }
+                if (s.charAt(0) == '{'){
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        int id = object.getInt("id");
+                        String list = object.getString("listname");
+                        ID.add(id);
+                        lists.add(list);
+                        adapter.notifyItemInserted(lists.size()-1);
+                    } catch (JSONException e) {
+                        Toast.makeText(ListActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
             }
         }
     }
@@ -224,6 +252,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void listClick(int position) {
                 Intent intent = new Intent(ListActivity.this, PurchasesActivity.class);
+                intent.putExtra("id", ID.get(position));
                 startActivity(intent);
             }
         });
@@ -233,12 +262,15 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
         try {
             FileReader in = new FileReader(cache);
             BufferedReader buffer = new BufferedReader(in);
-            String line = buffer.readLine();
-            id = line;
+            id = buffer.readLine();
         } catch (FileNotFoundException e) {
             Toast.makeText(this, "Не удалось открыть файл кэша", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(ListActivity.this, AuthActivity.class));
+            finish();
         } catch (IOException e) {
             Toast.makeText(this, "Возникла ошибка при загрузки из кэша", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(ListActivity.this, AuthActivity.class));
+            finish();
         }
     }
     private void Load(){
@@ -307,6 +339,8 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
     void removeItem(int position){
+        new connection().execute("DELETE", Integer.toString(ID.get(position)));
+        ID.remove(position);
         lists.remove(position);
         adapter.notifyItemRemoved(position);
     }
