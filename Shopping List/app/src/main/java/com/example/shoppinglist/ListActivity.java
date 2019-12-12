@@ -287,8 +287,12 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
                 Delete.create().show();
             }
 
+            @SuppressLint("RestrictedApi")
             @Override
             public void listClick(int position) {
+                LL_get.setVisibility(View.GONE);
+                LL_edit.setVisibility(View.GONE);
+                B_NewList.setVisibility(View.VISIBLE);
                 Intent intent = new Intent(ListActivity.this, PurchasesActivity.class);
                 intent.putExtra("id", ID.get(position));
                 intent.putExtra("name", lists.get(position));
