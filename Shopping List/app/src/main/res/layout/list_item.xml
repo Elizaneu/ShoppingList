@@ -10,8 +10,8 @@
             android:layout_height="match_parent">
         <Button
                 android:id="@+id/B_list_edit"
-                android:layout_width="55dp"
-                android:layout_height="wrap_content"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:paddingTop="7sp"
                 android:background="@drawable/edit_button"/>
         <TextView
@@ -20,12 +20,12 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="example"
-                android:textSize="25sp"
-                android:paddingTop="7sp"
+                android:textSize="18sp"
+                android:layout_marginTop="8dp"
                 android:paddingLeft="10sp"/>
         <Button
                 android:id="@+id/B_list_delete"
-                android:layout_width="55dp"
+                android:layout_width="38dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_delete_red"
                 android:paddingTop="7sp"/>
