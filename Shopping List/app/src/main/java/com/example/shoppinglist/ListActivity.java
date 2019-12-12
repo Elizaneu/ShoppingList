@@ -1,10 +1,12 @@
 package com.example.shoppinglist;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -36,10 +38,15 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
     private Button B_exit;
     private ListAdapter adapter;
     private String id;
+    private LinearLayout LL_edit;
+    private Button B_edit;
+    private EditText ET_edit;
 
 
     private ArrayList<String> lists = new ArrayList<>();
     private ArrayList<Integer> ID = new ArrayList<>();
+
+    private int position;
 
     private class List{
         String listname;
@@ -122,8 +129,35 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
                         return e.toString();
                     }
                 case "PUT":
+                    url = "https://flask-shoplist.herokuapp.com/api/lists/"+strings[1];
+                    try {
+                        //подключение
+                        URL obj = new URL(url);
+                        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                        con.setRequestProperty("Accept-Language", "en-US,en,q=0,5");
+                        con.setRequestProperty("Content-Type", "application/json");
+                        con.setRequestMethod("PUT");
+                        con.setDoOutput(true);
+                        //парсинг
+                        Gson g = new Gson();
+                        List item = new List(strings[2]);
+                        String urlParameters = g.toJson(item);
+                        //запись в поток
+                        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
+                        writer.write(urlParameters);
+                        wr.flush();
+                        writer.close();
+                        wr.close();
+                        //получение ответа
+                        int responseCode  = con.getResponseCode();
+                        if (responseCode != 200)
+                            return "f";
+                        return "OK";
 
-                    break;
+                    } catch (Exception e){
+                        return e.toString();
+                    }
                 case "DELETE":
                     url = "https://flask-shoplist.herokuapp.com/api/lists/"+strings[1];
                     try{
@@ -217,11 +251,15 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
         LL_get = findViewById(R.id.LL_get);
         RV = findViewById(R.id.RV);
         B_exit = findViewById(R.id.B_exit);
+        LL_edit = findViewById(R.id.LL_edit);
+        B_edit = findViewById(R.id.B_edit);
+        ET_edit = findViewById(R.id.ET_edit);
     }
     private void setClickListener() {
         B_NewList.setOnClickListener(this);
         B_get.setOnClickListener(this);
         B_exit.setOnClickListener(this);
+        B_edit.setOnClickListener(this);
     }
     private void buildRV(){
         adapter = new ListAdapter(lists);
@@ -255,6 +293,11 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("id", ID.get(position));
                 intent.putExtra("name", lists.get(position));
                 startActivity(intent);
+            }
+
+            @Override
+            public void EditButtonClick(int position) {
+                startEditItem(position);
             }
         });
     }
@@ -318,6 +361,20 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
                         });
                 Exit.create().show();
                 break;
+            case R.id.B_edit:
+                if (!ET_edit.getText().toString().equals("")){
+                    editItem(ET_edit.getText().toString());
+                    LL_get.setVisibility(View.GONE);
+                    LL_edit.setVisibility(View.GONE);
+                    B_NewList.setVisibility(View.VISIBLE);
+                    View view = this.getCurrentFocus();
+                    if (view != null) {
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                    }
+                }else
+                    Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
     @SuppressLint("RestrictedApi")
@@ -328,6 +385,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
             finish();
         }else{
             LL_get.setVisibility(View.GONE);
+            LL_edit.setVisibility(View.GONE);
             B_NewList.setVisibility(View.VISIBLE);
         }
     }
@@ -346,4 +404,19 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
         adapter.notifyItemRemoved(position);
     }
 
+    @SuppressLint("RestrictedApi")
+    void startEditItem(int position){
+        LL_get.setVisibility(View.GONE);
+        LL_edit.setVisibility(View.VISIBLE);
+        B_NewList.setVisibility(View.GONE);
+        ET_edit.setText(lists.get(position));
+        this.position = position;
+    }
+    void editItem(String i){
+
+        new ListActivity.connection().execute("PUT", ID.get(position).toString(), i);
+
+        lists.set(position, i);
+        adapter.notifyItemChanged(position);
+    }
 }

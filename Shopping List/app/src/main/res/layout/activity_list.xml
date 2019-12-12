@@ -37,6 +37,27 @@
                 android:id="@+id/B_get"
                 android:background="@drawable/ic_add_button"/>
     </LinearLayout>
+    <LinearLayout
+            android:id="@+id/LL_edit"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_anchorGravity="left|top"
+            app:layout_anchor="@+id/B_NewList"
+            android:background="@drawable/linearlayout_style">
+
+        <EditText
+                android:layout_width="272dp"
+                android:layout_height="48dp"
+                android:id="@+id/ET_edit"
+                android:hint="Новое имя листа"/>
+        <Button
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:id="@+id/B_edit"
+                android:background="@drawable/ic_add_button"/>
+    </LinearLayout>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
