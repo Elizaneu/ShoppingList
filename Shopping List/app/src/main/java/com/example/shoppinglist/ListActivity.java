@@ -253,6 +253,7 @@ public class ListActivity extends AppCompatActivity implements View.OnClickListe
             public void listClick(int position) {
                 Intent intent = new Intent(ListActivity.this, PurchasesActivity.class);
                 intent.putExtra("id", ID.get(position));
+                intent.putExtra("name", lists.get(position));
                 startActivity(intent);
             }
         });

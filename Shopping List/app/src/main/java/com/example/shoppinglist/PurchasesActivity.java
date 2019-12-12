@@ -239,6 +239,9 @@ public class PurchasesActivity extends AppCompatActivity implements View.OnClick
 
         Bundle arguments = getIntent().getExtras();
         id = Integer.toString(arguments.getInt("id"));
+        String name = arguments.getString("name");
+        TextView t = (TextView)findViewById(R.id.TV_name);
+        t.setText(name);
 
         findByID();
         buildRecyclerView();

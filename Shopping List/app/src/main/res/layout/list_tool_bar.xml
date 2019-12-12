@@ -8,7 +8,7 @@
     <TextView
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
-            android:text="Shopping list"
+            android:text="Списки продуктов"
             android:textSize="30sp"
             android:paddingTop="6sp"
             android:layout_weight="1"

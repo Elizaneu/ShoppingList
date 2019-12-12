@@ -10,6 +10,7 @@
             android:background="@android:drawable/ic_menu_revert"
             android:paddingTop="10dp"/>
     <TextView
+            android:id="@+id/TV_name"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:text="Shopping list"
