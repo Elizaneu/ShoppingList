@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="50dp"
+              android:orientation="horizontal"
+                android:background="@color/colorPrimary">
+
+    <Button android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/B_back"
+            android:background="@drawable/ic_back_button"
+            android:paddingTop="10dp"/>
+    <TextView
+            android:id="@+id/TV_name"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:text="Shopping list"
+            android:textSize="30sp"
+            android:paddingTop="6sp"
+            android:layout_weight="1"
+            android:textColor="#FFFFFF"/>
+    <Button
+            android:id="@+id/B_copy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingTop="10dp"
+            android:background="@drawable/ic_copy"/>
+    <Button
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/B_delete"
+            android:background="@drawable/ic_delete_red"
+            android:paddingTop="10dp"/>
+</LinearLayout>
