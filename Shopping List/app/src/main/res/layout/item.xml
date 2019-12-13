@@ -69,14 +69,14 @@
                 <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textSize="24sp"
+                        android:textSize="20sp"
                         android:id="@+id/purchase"
                         android:padding="4dp"
                         android:text="example"
                         android:layout_weight="1"/>
                 <Button
-                        android:layout_width="55sp"
-                        android:layout_height="55sp"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
                         android:id="@+id/B_edit"
                         android:background="@drawable/edit_button"/>
 

@@ -8,35 +8,44 @@
         tools:context=".RegistrationActivity"
         android:background="@color/ColorBackground">
 
+    <ImageView
+            android:layout_width="166dp"
+            android:layout_height="233dp"
+            android:src="@drawable/icon"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0"/>
     <EditText
             android:id="@+id/ET_username"
-            android:layout_width="match_parent"
+            android:layout_width="300sp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="16dp"
-            app:layout_constraintVertical_bias="0.211"
-            android:hint="username" app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintVertical_bias="0.339"
+            android:hint="Логин" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+    />
     <EditText
             android:id="@+id/ET_email"
-            android:layout_width="match_parent"
+            android:layout_width="300sp"
             android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="16dp"
-            android:hint="email" app:layout_constraintTop_toBottomOf="@+id/ET_username"/>
+            android:hint="Email" app:layout_constraintTop_toBottomOf="@+id/ET_username"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"/>
     <EditText
             android:id="@+id/ET_password"
-            android:layout_width="match_parent"
+            android:layout_width="300sp"
             android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="16dp"
-            android:hint="password"
-            android:inputType="textPassword" app:layout_constraintTop_toBottomOf="@+id/ET_email"/>
+            android:hint="Пароль"
+            android:inputType="textPassword" app:layout_constraintTop_toBottomOf="@+id/ET_email"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
     <Button
             android:id="@+id/B_registration"
-            android:layout_width="match_parent"
+            android:layout_width="300sp"
             android:layout_height="wrap_content"
-            android:text="Регистрация" tools:layout_editor_absoluteX="16dp"
+            android:text="Зарегистрироваться"
             app:layout_constraintTop_toBottomOf="@+id/ET_password"
             android:background="@drawable/start_button_design"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

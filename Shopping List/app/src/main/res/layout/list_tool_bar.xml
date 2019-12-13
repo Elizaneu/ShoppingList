@@ -9,12 +9,14 @@
     <TextView
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
-            android:text="Списки продуктов"
-            android:textSize="30sp"
+            android:text="Списки"
+            android:textSize="18sp"
             android:layout_weight="1"
             android:textColor="#FFFFFF"/>
-    <Button android:layout_width="50dp"
-            android:layout_height="50dp"
+    <Button
+            android:layout_marginTop="5dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:id="@+id/B_exit"
             android:background="@drawable/ic_exit"
             android:paddingTop="10sp"/>

@@ -3,32 +3,34 @@
               android:layout_width="match_parent"
               android:layout_height="50dp"
               android:orientation="horizontal"
-                android:background="@color/colorPrimary">
-
-    <Button android:layout_width="50dp"
-            android:layout_height="50dp"
+              android:background="@color/colorPrimary">
+    <Button android:layout_width="38dp"
+            android:layout_height="38dp"
             android:id="@+id/B_back"
             android:background="@drawable/ic_back_button"
-            android:paddingTop="10dp"/>
+            android:layout_marginTop="5dp"/>
     <TextView
             android:id="@+id/TV_name"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:text="Shopping list"
-            android:textSize="30sp"
-            android:paddingTop="6sp"
+            android:textSize="18sp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
+            android:layout_marginLeft="10dp"
             android:textColor="#FFFFFF"/>
     <Button
             android:id="@+id/B_copy"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:paddingTop="10dp"
-            android:background="@drawable/ic_copy"/>
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/ic_copy"
+            android:layout_marginRight="10dp"/>
     <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
             android:id="@+id/B_delete"
             android:background="@drawable/ic_delete_red"
-            android:paddingTop="10dp"/>
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"/>
 </LinearLayout>
