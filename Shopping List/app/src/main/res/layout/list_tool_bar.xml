@@ -10,7 +10,7 @@
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:text="Списки"
-            android:textSize="18sp"
+            android:textSize="21sp"
             android:layout_weight="1"
             android:textColor="#FFFFFF"/>
     <Button

@@ -14,7 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:text="Shopping list"
-            android:textSize="18sp"
+            android:textSize="21sp"
             android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:layout_marginLeft="10dp"
